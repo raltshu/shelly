@@ -1,0 +1,30 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "name": "mytimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 */10 * * * *"
+    },
+    {
+      "type": "cosmosDB",
+      "direction": "in",
+      "name": "docs",
+      "databaseName": "shellyAction",
+      "collectionName": "buttonOnOff",
+      "createIfNotExists": "false",
+      "connectionStringSetting": "CosmosDbConnectionString",
+      "sqlQuery": "SELECT * FROM c WHERE c.time_to_execute < GetCurrentDateTime() AND c.execution_status = 'PENDING'"
+    },
+    {
+      "type": "cosmosDB",
+      "direction": "out",
+      "name": "db",
+      "databaseName": "shellyAction",
+      "collectionName": "buttonOnOff",
+      "createIfNotExists": "false",
+      "connectionStringSetting": "CosmosDbConnectionString"
+    }
+  ]
+}
