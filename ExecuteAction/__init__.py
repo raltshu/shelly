@@ -1,5 +1,5 @@
 import logging
-import datetime, pytz, requests
+import datetime, pytz, requests, time
 from astral import LocationInfo
 from astral.sun import sun
 
@@ -16,37 +16,48 @@ def main(mytimer: func.TimerRequest, docs: func.DocumentList, db: func.Out[func.
 
     is_daytime = s['sunrise'] < current_time < s['sunset']
 
-    for doc in docs:
+    for index, doc in enumerate(docs):
         summary=""
+        new_status='DONE'
+
         if (doc['action']=='on' and is_daytime) or\
             (doc['action']=='off' and not is_daytime):
 
-            res = toggle_lights(doc['deviceId'], doc['action_to_take'], doc['channel_id'])
-            summary = f"""Action take on device:{doc['deviceId']}.
-            Lights were turned {doc['action_to_take']} on channel {doc['channel_id']}.
-            res={str(res)}."""
+            res, request_body = toggle_lights(doc['deviceId'], doc['action_to_take'], doc['channel_id'])
+            if res.status_code < 300:
+                summary = f"""Action take on device:{doc['deviceId']}.
+                Lights were turned {doc['action_to_take']} on channel {doc['channel_id']}."""
+            else:
+                summary = f"""Action attempt failed for device:{doc['deviceId']}.
+                Lights were not turned {doc['action_to_take']} on channel {doc['channel_id']}."""
+                new_status='PENDING'
+
+            doc["body"]=request_body
+            doc["respose"]=str(res)
         else:
             summary=f"""No action taken for {doc['deviceId']}.
             Lights were turned {doc['action']} on channel {doc['channel_id']}"""
         
         summary += f" daytime is {is_daytime}"
-
-        doc['execution_status']='DONE'
+        
+        doc["is_daytime"]=is_daytime
+        doc['execution_status']=new_status
         doc['handled_at']=current_time.isoformat()
         doc['comment']=summary
+        doc['doc_index_in_batch']=index
+        doc['docs_in_batch']=len(docs)
      
         db.set(doc)
         print(f'Replaced Item\'s Id is {doc["id"]}')
+        time.sleep(2) # Shelly API doesn't allow frequent calls
 
-def toggle_lights(device_id, action, channel_id=None):
+def toggle_lights(device_id, action, channel_id=0):
     body = {
         'auth_key':shelly_auth_key,
         'id':device_id,
         'turn':action,
+        'channel':channel_id
     }
 
-    if channel_id:
-        body['channel']=channel_id
-
     x = requests.post(shelly_endpoint, data = body)
-    return x
+    return x, body

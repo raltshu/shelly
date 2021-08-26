@@ -15,7 +15,7 @@
       "collectionName": "buttonOnOff",
       "createIfNotExists": "false",
       "connectionStringSetting": "CosmosDbConnectionString",
-      "sqlQuery": "SELECT * FROM c WHERE DateTimeAdd('d',30,c.time_to_execute)< GetCurrentDateTime() AND c.execution_status = 'DONE'"
+      "sqlQuery": "SELECT * FROM c WHERE DateTimeAdd('d',7,c.time_to_execute)< GetCurrentDateTime() AND c.execution_status = 'DONE'"
     }
   ]
 }
