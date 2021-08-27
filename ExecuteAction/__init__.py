@@ -1,22 +1,36 @@
 import logging
-import datetime, pytz, requests, time
+import datetime, pytz, requests, time, os
 from astral import LocationInfo
 from astral.sun import sun
+from azure.cosmos import CosmosClient
+
 
 import azure.functions as func
 
 shelly_auth_key = "NzhmNWZ1aWQ1EB2D4305480DC58F8AA62700122CE2D8B6D64BCFAF893ACF19A00684FE3D089F2B0EB004EE821D8"
 shelly_endpoint="https://shelly-28-eu.shelly.cloud/device/relay/control"
 
+connectionString = os.environ['CosmosDbConnectionString'].split(';')
+endpoint = connectionString[0][len('AccountEndpoint='):]
+key = connectionString[1][len('AccountKey='):]
+
 def main(mytimer: func.TimerRequest, docs: func.DocumentList, db: func.Out[func.Document]):
     logging.info('Python DB trigger function processed a request.')
     city = LocationInfo("Tel-Aviv", "Israel", "Asia/Jerusalem", 32.109333, 34.855499)
     s = sun(city.observer, date=datetime.datetime.utcnow())
-    current_time = pytz.timezone("UTC").localize(datetime.datetime.utcnow())
+    
+    client = CosmosClient(endpoint, key)
+    database_name = 'shellyAction'
+    database = client.get_database_client(database_name)
+    container_name = 'buttonOnOff'
+    container = database.get_container_client(container_name)
 
-    is_daytime = s['sunrise'] < current_time < s['sunset']
+    res = container.query_items("SELECT * FROM c WHERE c.time_to_execute < GetCurrentDateTime() AND c.execution_status = 'PENDING'", enable_cross_partition_query=True)
 
-    for index, doc in enumerate(docs):
+    for index, doc in enumerate(res):
+        current_time = pytz.timezone("UTC").localize(datetime.datetime.utcnow())
+        is_daytime = s['sunrise'] < current_time < s['sunset']
+
         summary=""
         new_status='DONE'
 
@@ -50,7 +64,8 @@ def main(mytimer: func.TimerRequest, docs: func.DocumentList, db: func.Out[func.
         doc['doc_index_in_batch']=index
         doc['docs_in_batch']=len(docs)
      
-        db.set(doc)
+        # db.set(doc)
+        container.replace_item(doc,doc)
         print(f'Replaced Item\'s Id is {doc["id"]}')
         time.sleep(2) # Shelly API doesn't allow frequent calls
 
