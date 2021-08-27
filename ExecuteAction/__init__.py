@@ -27,16 +27,19 @@ def main(mytimer: func.TimerRequest, docs: func.DocumentList, db: func.Out[func.
             if res.status_code < 300:
                 summary = f"""Action take on device:{doc['deviceId']}.
                 Lights were turned {doc['action_to_take']} on channel {doc['channel_id']}."""
+                doc['action_taken']='SUCCESS'
             else:
                 summary = f"""Action attempt failed for device:{doc['deviceId']}.
                 Lights were not turned {doc['action_to_take']} on channel {doc['channel_id']}."""
                 new_status='PENDING'
+                doc['action_taken']='FAILED'
 
             doc["body"]=request_body
-            doc["respose"]=str(res)
+            doc["response"]=str(res)
         else:
             summary=f"""No action taken for {doc['deviceId']}.
             Lights were turned {doc['action']} on channel {doc['channel_id']}"""
+            doc['action_taken']='NOT NEEDED'
         
         summary += f" daytime is {is_daytime}"
         
