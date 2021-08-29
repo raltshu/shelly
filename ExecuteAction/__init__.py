@@ -61,6 +61,8 @@ def main(mytimer: func.TimerRequest, docs: func.DocumentList, db: func.Out[func.
         doc['execution_status']=new_status
         doc['handled_at']=current_time.isoformat()
         doc['comment']=summary
+        doc['sunrise']=s['sunrise'].isoformat()
+        doc['sunset']=s['sunset'].isoformat()
         doc['doc_index_in_batch']=index
         doc['docs_in_batch']=len(docs)
      

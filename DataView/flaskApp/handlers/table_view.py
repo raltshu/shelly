@@ -34,9 +34,10 @@ class TableView(FlaskView):
                 'time_to_execute':formattime(rec.get('time_to_execute')),
                 'handled_at':formattime(rec.get('handled_at')),
                 'daylight':formatdaylight(rec.get('is_daytime')),
+                'sunrise_sunset':formatsunrisesunset(rec.get('sunrise'), rec.get('sunset')),
                 'shelly_response':formatshellyresponse(rec.get('response')),
-                'device_id':rec.get('deviceId'),
-                'channel_id':rec.get('channel_id'),
+                'device_id':f"{rec.get('deviceId')}_{rec.get('channel_id')}",
+                # 'channel_id':rec.get('channel_id'),
                 'msg':rec.get('comment')
             }
             display_list.append(display_rec)
@@ -108,3 +109,22 @@ def formatshellyresponse(res:str)->str:
     res = res.replace('<','&lt')
     res = res.replace('>','&gt')
     return res
+
+def formatsunrisesunset(sunrisetime: str, sunsettime:str) -> str:
+    result = f'{sunrisetime} <br/> {sunsettime}'
+    try:
+        sunrise = datetime.fromisoformat(sunrisetime)
+        sunrise = sunrise.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Jerusalem'))
+        sunrise_str = sunrise.strftime("%H:%M")
+        sunset = datetime.fromisoformat(sunsettime)
+        sunset = sunset.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Jerusalem'))
+        sunset_str = sunset.strftime("%H:%M %Z%z")
+        sunrise_img_src = "https://img.flaticon.com/icons/png/512/169/169367.png?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
+        sunrise_img = f'<img src={sunrise_img_src} alt="sun or moon" width="20" height="20">'
+        sunset_img_src = "https://img.flaticon.com/icons/png/512/196/196685.png?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
+        sunset_img = f'<img src={sunset_img_src} alt="sun or moon" width="20" height="20">'
+        result = f'{sunrise_img} {sunrise_str} <br/>{sunset_img} {sunset_str}'
+    except:
+        logging.error(f'Failed to format {sunrisetime} and {sunsettime}')
+    finally:
+        return result
