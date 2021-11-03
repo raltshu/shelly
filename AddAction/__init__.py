@@ -4,7 +4,7 @@ import datetime
 import azure.functions as func
 
 device_names = {
-    'd8bfc019c374_0':'תאורת חוץ מרכז',
+    'e868e786e848_0':'תאורת חוץ מרכז',
     'c45bbe5fbc3a_0':'תאורה נסתרת',
     'c45bbe5fbc3a_1':'גינה',
     '98cdac1fb895_0':'פנים',
