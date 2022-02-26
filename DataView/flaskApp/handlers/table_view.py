@@ -10,6 +10,9 @@ connectionString = os.environ['CosmosDbConnectionString'].split(';')
 endpoint = connectionString[0][len('AccountEndpoint='):]
 key = connectionString[1][len('AccountKey='):]
 
+sun_icon = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Sun_icon.svg/1020px-Sun_icon.svg.png"
+moon_icon = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/OOjs_UI_icon_moon.svg/1200px-OOjs_UI_icon_moon.svg.png"
+
 class TableView(FlaskView):
   
     @route('/', methods=['GET'])
@@ -60,9 +63,9 @@ def formatdaylight(is_daylight: bool) -> str:
         return None
 
     if is_daylight:
-        src= "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Sun_icon.svg/1020px-Sun_icon.svg.png"
+        src= f"{sun_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
     else:
-        src = "https://img.flaticon.com/icons/png/512/196/196685.png?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
+        src = f"{moon_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
 
     return f'<img src={src} alt="sun or moon" width="40" height="40">'
 
@@ -70,7 +73,7 @@ def formatonoff(action: str) -> str:
     if action.lower() == 'on':
         src = 'https://icons.iconarchive.com/icons/hopstarter/soft-scraps/256/Button-Turn-On-icon.png'
     else:
-        src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/OOjs_UI_icon_moon.svg/1200px-OOjs_UI_icon_moon.svg.png'
+        src = 'https://icons.iconarchive.com/icons/hopstarter/soft-scraps/256/Button-Turn-Off-icon.png'
 
     return f'<img src={src} alt="sun or moon" width="40" height="40">'
 
@@ -119,9 +122,9 @@ def formatsunrisesunset(sunrisetime: str, sunsettime:str) -> str:
         sunset = datetime.fromisoformat(sunsettime)
         sunset = sunset.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Jerusalem'))
         sunset_str = sunset.strftime("%H:%M %Z%z")
-        sunrise_img_src = "https://img.flaticon.com/icons/png/512/169/169367.png?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
+        sunrise_img_src = f"{sun_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
         sunrise_img = f'<img src={sunrise_img_src} alt="sun or moon" width="20" height="20">'
-        sunset_img_src = "https://img.flaticon.com/icons/png/512/196/196685.png?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
+        sunset_img_src = f"{moon_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
         sunset_img = f'<img src={sunset_img_src} alt="sun or moon" width="20" height="20">'
         result = f'{sunrise_img} {sunrise_str} <br/>{sunset_img} {sunset_str}'
     except:
