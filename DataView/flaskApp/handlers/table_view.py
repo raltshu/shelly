@@ -60,7 +60,7 @@ def formatdaylight(is_daylight: bool) -> str:
         return None
 
     if is_daylight:
-        src= "https://img.flaticon.com/icons/png/512/169/169367.png?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
+        src= "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Sun_icon.svg/1020px-Sun_icon.svg.png"
     else:
         src = "https://img.flaticon.com/icons/png/512/196/196685.png?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
 
@@ -70,7 +70,7 @@ def formatonoff(action: str) -> str:
     if action.lower() == 'on':
         src = 'https://icons.iconarchive.com/icons/hopstarter/soft-scraps/256/Button-Turn-On-icon.png'
     else:
-        src = 'https://icons.iconarchive.com/icons/hopstarter/soft-scraps/256/Button-Turn-Off-icon.png'
+        src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/OOjs_UI_icon_moon.svg/1200px-OOjs_UI_icon_moon.svg.png'
 
     return f'<img src={src} alt="sun or moon" width="40" height="40">'
 
