@@ -31,7 +31,7 @@ def main(mytimer: func.TimerRequest, docs: func.DocumentList, db: func.Out[func.
         current_time = pytz.timezone("UTC").localize(datetime.datetime.utcnow())
         sunrise_offset = doc.get('sunrise_offset',0)
         sunset_offset = doc.get('sunset_offset',0)
-        is_daytime = s['sunrise']+datetime.timedelta(sunrise_offset) < current_time < s['sunset']+datetime.timedelta(minutes=sunset_offset)
+        is_daytime = s['sunrise']+datetime.timedelta(minutes=sunrise_offset) < current_time < s['sunset']+datetime.timedelta(minutes=sunset_offset)
 
         summary=""
         new_status='DONE'
