@@ -118,15 +118,15 @@ def formatsunrisesunset(sunrisetime: str, sunsettime:str, sunrise_offset:int, su
     try:
         sunrise = datetime.fromisoformat(sunrisetime)
         sunrise = sunrise.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Jerusalem'))
-        sunrise_str = sunrise.strftime("%H:%M")
+        sunrise_str = sunrise.strftime(f"%H:%M{sunrise_offset:+}")
         sunset = datetime.fromisoformat(sunsettime)
         sunset = sunset.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Jerusalem'))
-        sunset_str = sunset.strftime("%H:%M %Z%z")
+        sunset_str = sunset.strftime(f"%H:%M{sunset_offset:+} %Z%z")
         sunrise_img_src = f"{sun_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
         sunrise_img = f'<img src={sunrise_img_src} alt="sun or moon" width="20" height="20">'
         sunset_img_src = f"{moon_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
         sunset_img = f'<img src={sunset_img_src} alt="sun or moon" width="20" height="20">'
-        result = f'{sunrise_img} {sunrise_str}{sunrise_offset:+} <br/>{sunset_img} {sunset_str}{sunset_offset:+}'
+        result = f'{sunrise_img} {sunrise_str} <br/>{sunset_img} {sunset_str}'
     except:
         logging.error(f'Failed to format {sunrisetime} and {sunsettime}')
     finally:
