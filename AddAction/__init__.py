@@ -43,7 +43,7 @@ def main(req: func.HttpRequest, \
         'time_insert':current_time.isoformat(),
         'time_to_execute':time_to_execute.isoformat(),
         'execution_status':'PENDING',
-        'device_name':device.name,
+        'device_name':device.device_name,
         'sunrise_offset':device.sunrise_offest,
         'sunset_offset':device.sunset_offset,
         'comment':'None'}
