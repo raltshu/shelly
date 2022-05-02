@@ -46,6 +46,7 @@ def main(req: func.HttpRequest, \
         'sunrise_offset':device.sunrise_offest,
         'sunset_offset':device.sunset_offset,
         'comment':'None'}
+    print(record)
 
     doc.set(func.Document.from_dict(record))
     
