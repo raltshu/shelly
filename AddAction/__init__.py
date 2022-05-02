@@ -21,7 +21,7 @@ device_names = {
 def main(req: func.HttpRequest, \
         doc: func.Out[func.Document]) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
-
+    print("start")
     action = req.route_params.get('action')
     action_to_take = 'on' if action=='off' else 'off'
     device_id = req.route_params.get('device_id')
@@ -33,6 +33,7 @@ def main(req: func.HttpRequest, \
 
 
     device = device_names.get(f'{device_id.lower()}_{channel_id}',Device(f'{device_id.lower()}_{channel_id}',0,0))
+    print(device)
     
     record = {
         'action':action,
