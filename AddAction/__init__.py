@@ -11,11 +11,11 @@ class Device:
     sunset_offset:int
 
 device_names = {
-    'e868e786e848_0':Device('תאורת חוץ מרכז',0,-30),
-    'c45bbe5fbc3a_0':Device('תאורה נסתרת',0,-60),
-    'c45bbe5fbc3a_1':Device('גינה',-30,15),
-    'c45bbe5f4d41_0':Device('פנים',30,-45),
-    'c45bbe5f4d41_1':Device('אפלייט חוץ',-60,30)
+    'e868e786e848_0':Device('תאורת חוץ מרכז',-30,-20),
+    'c45bbe5fbc3a_0':Device('תאורה נסתרת',25,-50),
+    'c45bbe5fbc3a_1':Device('גינה',-55,0),
+    'c45bbe5f4d41_0':Device('פנים',0,-40),
+    'c45bbe5f4d41_1':Device('אפלייט חוץ',-60,15)
 }
 
 def main(req: func.HttpRequest, \
