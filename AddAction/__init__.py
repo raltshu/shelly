@@ -1,14 +1,21 @@
 import logging
 import datetime
+from dataclasses import dataclass
 
 import azure.functions as func
 
+@dataclass
+class Device:
+    device_name:str
+    sunrise_offset:int
+    sunset_offset:int
+
 device_names = {
-    'e868e786e848_0':'תאורת חוץ מרכז',
-    'c45bbe5fbc3a_0':'תאורה נסתרת',
-    'c45bbe5fbc3a_1':'גינה',
-    'c45bbe5f4d41_0':'פנים',
-    'c45bbe5f4d41_1':'אפלייט חוץ'
+    'e868e786e848_0':Device('תאורת חוץ מרכז',0,-30),
+    'c45bbe5fbc3a_0':Device('תאורה נסתרת',0,-60),
+    'c45bbe5fbc3a_1':Device('גינה',-30,15),
+    'c45bbe5f4d41_0':Device('פנים',30,-45),
+    'c45bbe5f4d41_1':Device('אפלייט חוץ',-60,30)
 }
 
 def main(req: func.HttpRequest, \
@@ -25,7 +32,7 @@ def main(req: func.HttpRequest, \
     time_to_execute = current_time + datetime.timedelta(minutes=delta)
 
 
-    device_name = device_names.get(f'{device_id.lower()}_{channel_id}',f'{device_id.lower()}_{channel_id}')
+    device = device_names.get(f'{device_id.lower()}_{channel_id}',Device(f'{device_id.lower()}_{channel_id}',0,0))
     
     record = {
         'action':action,
@@ -35,7 +42,9 @@ def main(req: func.HttpRequest, \
         'time_insert':current_time.isoformat(),
         'time_to_execute':time_to_execute.isoformat(),
         'execution_status':'PENDING',
-        'device_name':device_name,
+        'device_name':device.name,
+        'sunrise_offset':device.sunrise_offest,
+        'sunset_offset':device.sunset_offset,
         'comment':'None'}
 
     doc.set(func.Document.from_dict(record))
