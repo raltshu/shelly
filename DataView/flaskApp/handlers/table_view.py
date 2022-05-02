@@ -37,7 +37,7 @@ class TableView(FlaskView):
                 'time_to_execute':formattime(rec.get('time_to_execute')),
                 'handled_at':formattime(rec.get('handled_at')),
                 'daylight':formatdaylight(rec.get('is_daytime')),
-                'sunrise_sunset':formatsunrisesunset(rec.get('sunrise'), rec.get('sunset')),
+                'sunrise_sunset':formatsunrisesunset(rec.get('sunrise'), rec.get('sunset'), rec.get('sunrise_offset',0), rec.get('sunset_offset',0)),
                 'shelly_response':formatshellyresponse(rec.get('response')),
                 'device_id':f"{rec.get('deviceId')}_{rec.get('channel_id')}",
                 # 'channel_id':rec.get('channel_id'),
@@ -113,7 +113,7 @@ def formatshellyresponse(res:str)->str:
     res = res.replace('>','&gt')
     return res
 
-def formatsunrisesunset(sunrisetime: str, sunsettime:str) -> str:
+def formatsunrisesunset(sunrisetime: str, sunsettime:str, sunrise_offset:int, sunset_offset:int) -> str:
     result = f'{sunrisetime} <br/> {sunsettime}'
     try:
         sunrise = datetime.fromisoformat(sunrisetime)
@@ -126,7 +126,7 @@ def formatsunrisesunset(sunrisetime: str, sunsettime:str) -> str:
         sunrise_img = f'<img src={sunrise_img_src} alt="sun or moon" width="20" height="20">'
         sunset_img_src = f"{moon_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
         sunset_img = f'<img src={sunset_img_src} alt="sun or moon" width="20" height="20">'
-        result = f'{sunrise_img} {sunrise_str} <br/>{sunset_img} {sunset_str}'
+        result = f'{sunrise_img} {sunrise_str}{sunrise_offset:+} <br/>{sunset_img} {sunset_str}{sunset_offset:+}'
     except:
         logging.error(f'Failed to format {sunrisetime} and {sunsettime}')
     finally:
