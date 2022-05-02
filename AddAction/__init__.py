@@ -44,7 +44,7 @@ def main(req: func.HttpRequest, \
         'time_to_execute':time_to_execute.isoformat(),
         'execution_status':'PENDING',
         'device_name':device.device_name,
-        'sunrise_offset':device.sunrise_offest,
+        'sunrise_offset':device.sunrise_offset,
         'sunset_offset':device.sunset_offset,
         'comment':'None'}
     print(record)
