@@ -22,9 +22,9 @@
       "direction": "out",
       "name": "doc",
       "databaseName": "shellyAction",
-      "collectionName": "buttonOnOff",
+      "containerName": "buttonOnOff",
       "createIfNotExists": "false",
-      "connectionStringSetting": "CosmosDbConnectionString"
+      "connection": "CosmosDbConnectionString"
     }
   ]
 }
