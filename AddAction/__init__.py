@@ -11,7 +11,7 @@ class Device:
     sunset_offset:int
 
 device_names = {
-    'e868e786e848_0':Device('תאורת חוץ מרכז',-30,-20),
+    '083af201e040_0':Device('תאורת חוץ מרכז',-30,-20),
     'c45bbe5fbc3a_0':Device('תאורה נסתרת',50,-60),
     'c45bbe5fbc3a_1':Device('גינה',-55,0),
     'c45bbe5f4d41_0':Device('פנים',30,-40),
