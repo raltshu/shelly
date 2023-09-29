@@ -31,14 +31,14 @@ def main(req: func.HttpRequest, \
     current_time = datetime.datetime.utcnow()
     delta = 30 if action=='on' else 10
     time_to_execute = current_time + datetime.timedelta(minutes=delta)
-	id=str(uuid.uuid4())
+    my_id=str(uuid.uuid4())
 
 
     device = device_names.get(f'{device_id.lower()}_{channel_id}',Device(f'{device_id.lower()}_{channel_id}',0,0))
     print(device)
     
     record = {
-		'id': id,
+        'id': my_id,
         'action':action,
         'action_to_take':action_to_take,
         'deviceId':device_id,
