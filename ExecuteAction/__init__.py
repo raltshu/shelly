@@ -80,6 +80,8 @@ def toggle_lights(device_id, action, channel_id=0):
         'turn':action,
         'channel':channel_id
     }
+	
+	body2 = f"auth_key={shelly_auth_key}&id={device_id}&turn={action}&channel={channel_id}"
 
-    x = requests.post(shelly_endpoint, data = body)
+    x = requests.post(shelly_endpoint, data = body2)
     return x, body
