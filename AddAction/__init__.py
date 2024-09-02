@@ -15,8 +15,8 @@ device_names = {
     '083af201e040_0':Device('תאורת חוץ מרכז',-30,-20),
     '3ce90e30ffb8_0':Device('תאורה נסתרת',50,-60),
     '3ce90e30ffb8_1':Device('גינה',-55,0),
-    'c45bbe5f4d41_0':Device('פנים',30,-40),
-    'c45bbe5f4d41_1':Device('אפלייט חוץ',-60,15)
+    '3ce90e2f815c_0':Device('פנים',30,-40),
+    '3ce90e2f815c_1':Device('אפלייט חוץ',-60,15)
 }
 
 def main(req: func.HttpRequest, \
