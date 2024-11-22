@@ -80,8 +80,11 @@ def toggle_lights(device_id, action, channel_id=0):
         'turn':action,
         'channel':channel_id
     }
-    
+    # Define headers including the "Content-Type" header
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
     body2 = f"auth_key={shelly_auth_key}&id={device_id}&turn={action}&channel={channel_id}"
 
-    x = requests.post(shelly_endpoint, data = body2)
+    x = requests.post(shelly_endpoint, data=body2, headers=headers)
     return x, body
