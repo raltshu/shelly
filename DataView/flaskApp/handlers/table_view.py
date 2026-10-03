@@ -10,8 +10,18 @@ connectionString = os.environ['CosmosDbConnectionString'].split(';')
 endpoint = connectionString[0][len('AccountEndpoint='):]
 key = connectionString[1][len('AccountKey='):]
 
-sun_icon = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Sun_icon.svg/1020px-Sun_icon.svg.png"
-moon_icon = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/OOjs_UI_icon_moon.svg/1200px-OOjs_UI_icon_moon.svg.png"
+SUN = '☀️'
+MOON = '🌙'
+ON = '🟢'
+OFF = '🔴'
+ARROW = '➜'
+PENDING = '⏳'
+DONE = '✅'
+SUCCESS = '✔️'
+FAILED = '❌'
+
+def icon(symbol: str, title: str, size: int = 28) -> str:
+    return f'<span role="img" aria-label="{title}" title="{title}" style="font-size:{size}px">{symbol}</span>'
 
 class TableView(FlaskView):
   
@@ -63,47 +73,33 @@ def formatdaylight(is_daylight: bool) -> str:
         return None
 
     if is_daylight:
-        src= f"{sun_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
-    else:
-        src = f"{moon_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
-
-    return f'<img src={src} alt="sun or moon" width="40" height="40">'
+        return icon(SUN, 'Daytime')
+    return icon(MOON, 'Night')
 
 def formatonoff(action: str) -> str:
+    if action is None:
+        return ''
     if action.lower() == 'on':
-        src = 'https://icons.iconarchive.com/icons/hopstarter/soft-scraps/256/Button-Turn-On-icon.png'
-    else:
-        src = 'https://icons.iconarchive.com/icons/hopstarter/soft-scraps/256/Button-Turn-Off-icon.png'
-
-    return f'<img src={src} alt="sun or moon" width="40" height="40">'
+        return icon(ON, 'On')
+    return icon(OFF, 'Off')
 
 def formatactiontoaction(action:str, to_action:str) -> str:
-    src = 'https://www.iconninja.com/files/247/447/813/right-arrows-direction-arrow-icon.svg'
-    img = f'<img src={src} alt="sun or moon" width="40" height="40">'
-    return formatonoff(action) + img + formatonoff(to_action)
+    return f'<span style="white-space:nowrap">{formatonoff(action)} {icon(ARROW, "to", 22)} {formatonoff(to_action)}</span>'
 
 def formatpendingdone(stat:str) -> str:
     if stat=='PENDING':
-        src = 'https://t3.ftcdn.net/jpg/01/82/45/90/360_F_182459037_Z5oMYBIAJRKrGG8D6xkxtXErXJ0HT8Vs.jpg'
+        return icon(PENDING, 'Pending')
     elif stat=='DONE':
-        src = 'https://cdn3.vectorstock.com/i/1000x1000/45/22/done-rubber-stamp-vector-11314522.jpg'
-    else:
-        return None
-    
-    img = f'<img src={src} alt="sun or moon" width="70" height="50">'
-    return img
+        return icon(DONE, 'Done')
+    return None
 
 
 def formatactionstatus(stat:str)->str:
     if stat == 'FAILED':
-        src = 'https://image.pngaaa.com/350/3604350-middle.png'
+        return icon(FAILED, 'Failed')
     elif stat == 'SUCCESS':
-        src = 'https://image.pngaaa.com/179/4681179-middle.png'
-    else:
-        return stat
-
-    img = f'<img src={src} alt="sun or moon" width="70" height="50">'
-    return img
+        return icon(SUCCESS, 'Success')
+    return stat
 
 def formatshellyresponse(res:str)->str:
     if res is None:
@@ -122,10 +118,8 @@ def formatsunrisesunset(sunrisetime: str, sunsettime:str, sunrise_offset:int, su
         sunset = datetime.fromisoformat(sunsettime)
         sunset = sunset.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Jerusalem'))
         sunset_str = sunset.strftime(f"%H:%M{sunset_offset:+} %Z%z")
-        sunrise_img_src = f"{sun_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
-        sunrise_img = f'<img src={sunrise_img_src} alt="sun or moon" width="20" height="20">'
-        sunset_img_src = f"{moon_icon}?size=40x40&pad=1,1,1,1&ext=png&bg=FFFFFFFF"
-        sunset_img = f'<img src={sunset_img_src} alt="sun or moon" width="20" height="20">'
+        sunrise_img = icon(SUN, 'Sunrise', 16)
+        sunset_img = icon(MOON, 'Sunset', 16)
         result = f'{sunrise_img} {sunrise_str} <br/>{sunset_img} {sunset_str}'
     except:
         logging.error(f'Failed to format {sunrisetime} and {sunsettime}')
